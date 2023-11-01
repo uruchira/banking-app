@@ -10,7 +10,7 @@ import Modal from "react-bootstrap/Modal";
 import TextInput from "../TextInput";
 import { deposit, withdraw } from "../../slices";
 
-const TransactionModal = ({ type, show, handleClose }) => {
+const TransactionModal = ({ transactionType, show, handleClose }) => {
   const dispatch = useDispatch();
   const [formValues, setFormValues] = useState({});
 
@@ -19,10 +19,10 @@ const TransactionModal = ({ type, show, handleClose }) => {
   };
 
   const handleOnSave = () => {
-    if (type === "deposit") {
-      dispatch(deposit({ ...formValues, tid: nanoid() }));
-    } else if (type === "withdraw") {
-      dispatch(withdraw({ ...formValues, tid: nanoid() }));
+    if (transactionType === "deposit") {
+      dispatch(deposit({ ...formValues, tid: nanoid(), type: "credit" }));
+    } else if (transactionType === "withdraw") {
+      dispatch(withdraw({ ...formValues, tid: nanoid(), type: "debit" }));
     } else {
       return false;
     }
@@ -33,7 +33,7 @@ const TransactionModal = ({ type, show, handleClose }) => {
   return (
     <Modal show={show} onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title className="text-capitalize">{type}</Modal.Title>
+        <Modal.Title className="text-capitalize">{transactionType}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form>
@@ -64,7 +64,7 @@ const TransactionModal = ({ type, show, handleClose }) => {
           className="text-capitalize"
           onClick={handleOnSave}
         >
-          {type}
+          {transactionType}
         </Button>
       </Modal.Footer>
     </Modal>
@@ -72,7 +72,7 @@ const TransactionModal = ({ type, show, handleClose }) => {
 };
 
 TransactionModal.propTypes = {
-  type: PropTypes.string,
+  transactionType: PropTypes.string,
   show: PropTypes.bool,
   handleClose: PropTypes.func,
 };

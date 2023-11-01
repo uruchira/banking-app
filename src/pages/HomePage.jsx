@@ -38,7 +38,7 @@ const Home = () => {
       </div>
       <TransactionTable />
       <TransactionModal
-        type={userAction}
+        transactionType={userAction}
         show={userAction === "deposit" || userAction === "withdraw"}
         handleClose={handleModalClose}
       />
