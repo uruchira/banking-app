@@ -7,6 +7,8 @@ import Button from "react-bootstrap/Button";
 import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 
+import { toast } from "react-toastify";
+
 import TextInput from "../TextInput";
 import { deposit, withdraw } from "../../slices";
 
@@ -50,8 +52,10 @@ const TransactionModal = ({ transactionType, show, handleClose }) => {
     if (noAmount && noRemarks) {
       if (transactionType === "deposit") {
         dispatch(deposit({ ...formValues, tid: nanoid(), type: "credit" }));
+        toast.success("Credited to your account successfully");
       } else if (transactionType === "withdraw") {
         dispatch(withdraw({ ...formValues, tid: nanoid(), type: "debit" }));
+        toast.success("Debited from your account successfully");
       } else {
         return false;
       }
