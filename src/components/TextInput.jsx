@@ -8,6 +8,7 @@ const TextInput = ({
   name,
   placeholder,
   value,
+  error,
   onChange,
 }) => {
   return (
@@ -17,6 +18,7 @@ const TextInput = ({
         type={type}
         name={name}
         placeholder={placeholder}
+        className={error ? "is-invalid" : ""}
         value={value}
         onChange={onChange}
       />
@@ -30,6 +32,7 @@ TextInput.propTypes = {
   name: PropTypes.string,
   placeholder: PropTypes.string,
   value: PropTypes.string,
+  error: PropTypes.string,
   onChange: PropTypes.func,
 };
 

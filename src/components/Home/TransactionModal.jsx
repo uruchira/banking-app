@@ -13,21 +13,54 @@ import { deposit, withdraw } from "../../slices";
 const TransactionModal = ({ transactionType, show, handleClose }) => {
   const dispatch = useDispatch();
   const [formValues, setFormValues] = useState({});
+  const [formErrors, setFormErrors] = useState({});
 
   const handleOnChange = (e) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    if (e.target.value) {
+      setErrorMessage(e.target.name, true);
+    } else {
+      setErrorMessage(e.target.name, false);
+    }
+  };
+
+  const checkForRequired = (field) => {
+    if (formValues[field]) {
+      return true;
+    }
+    return false;
+  };
+
+  const setErrorMessage = (name, value) => {
+    if (value) {
+      setFormErrors((prevErrors) => {
+        return { ...prevErrors, [name]: "" };
+      });
+    } else {
+      setFormErrors((prevErrors) => {
+        return { ...prevErrors, [name]: `${name} is required` };
+      });
+    }
   };
 
   const handleOnSave = () => {
-    if (transactionType === "deposit") {
-      dispatch(deposit({ ...formValues, tid: nanoid(), type: "credit" }));
-    } else if (transactionType === "withdraw") {
-      dispatch(withdraw({ ...formValues, tid: nanoid(), type: "debit" }));
+    const noAmount = checkForRequired("amount");
+    const noRemarks = checkForRequired("remarks");
+
+    if (noAmount && noRemarks) {
+      if (transactionType === "deposit") {
+        dispatch(deposit({ ...formValues, tid: nanoid(), type: "credit" }));
+      } else if (transactionType === "withdraw") {
+        dispatch(withdraw({ ...formValues, tid: nanoid(), type: "debit" }));
+      } else {
+        return false;
+      }
+      setFormValues({});
+      handleClose();
     } else {
-      return false;
+      setErrorMessage("amount", noAmount);
+      setErrorMessage("remarks", noRemarks);
     }
-    setFormValues({});
-    handleClose();
   };
 
   return (
@@ -43,6 +76,7 @@ const TransactionModal = ({ transactionType, show, handleClose }) => {
             name="amount"
             placeholder="Amount in dollar"
             value={formValues.amount || ""}
+            error={formErrors.amount || ""}
             onChange={handleOnChange}
           />
           <TextInput
@@ -50,6 +84,7 @@ const TransactionModal = ({ transactionType, show, handleClose }) => {
             name="remarks"
             placeholder="Remarks"
             value={formValues.remarks || ""}
+            error={formErrors.remarks || ""}
             onChange={handleOnChange}
           />
         </Form>
